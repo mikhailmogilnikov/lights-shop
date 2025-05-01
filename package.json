@@ -1,0 +1,22 @@
+{
+  "name": "lights-shop",
+  "private": true,
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "dev": "bun run --filter '*' dev",
+    "build": "bun run --filter '*' build",
+    "docker:up": "docker compose up -d",
+    "docker:down": "docker compose down",
+    "check-types": "bun run --filter '*' check-types",
+    "dev:native": "bun run --filter native dev",
+    "dev:web": "bun run --filter web dev",
+    "dev:server": "bun run --filter server dev",
+    "db:push": "bun run --filter server db:push",
+    "db:studio": "bun run --filter server db:studio",
+    "prisma:generate": "bun run --filter server prisma:generate"
+  },
+  "packageManager": "bun@1.2.2"
+}
