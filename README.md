@@ -1,13 +1,10 @@
-# lights-shop
-
-This project was created with [Better-T-Stack](https://github.com/AmanVarshney01/create-better-t-stack), a modern TypeScript stack that combines React, SvelteKit, Hono, tRPC, and more.
+# Lights Shop
 
 ## Features
 
 - **TypeScript** - For type safety and improved developer experience
 - **SvelteKit** - Web framework for building Svelte apps
 - **TailwindCSS** - Utility-first CSS for rapid UI development
-- **shadcn/ui** - Reusable UI components
 - **Hono** - Lightweight, performant server framework
 - **tRPC** - End-to-end type-safe APIs
 - **Bun** - Runtime environment
