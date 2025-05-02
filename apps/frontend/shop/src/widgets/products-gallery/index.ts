@@ -1,0 +1,1 @@
+export { default as ProductsGallery } from './ui/products-gallety.svelte';

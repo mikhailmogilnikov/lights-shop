@@ -1,4 +1,5 @@
 node_modules
 .turbo
-apps/server
-apps/web
+
+/apps/server/
+/apps/web/

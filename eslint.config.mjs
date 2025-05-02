@@ -5,7 +5,7 @@ import unusedImports from 'eslint-plugin-unused-imports';
 import importPlugin from 'eslint-plugin-import';
 
 export default tseslint.config(
-  { ignores: ['dist', 'node_modules', '.svelte-kit'] },
+  { ignores: ['dist', 'node_modules', '**/.svelte-kit'] },
   {
     linterOptions: {
       reportUnusedDisableDirectives: 'off',
