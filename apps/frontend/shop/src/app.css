@@ -1,2 +1,7 @@
 @import 'tailwindcss';
 @plugin './entities/theme/utils/theme-plugin';
+
+@theme {
+  --color-black: #000;
+  --color-white: #fff;
+}
