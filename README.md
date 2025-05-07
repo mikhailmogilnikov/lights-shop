@@ -1,6 +1,6 @@
 # Lights Shop
 
-<b>(Online Shop)[lights-shop.vercel.app]</b>
+<b>[Online Shop](https://lights-shop.vercel.app)</b>
 
 ## Features
 
