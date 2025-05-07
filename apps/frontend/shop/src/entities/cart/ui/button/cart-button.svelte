@@ -1,6 +1,6 @@
 <script lang="ts">
   import { cartStore } from '~/entities/cart';
-  import { openCartSheet } from '~/entities/cart/lib/store/cart-sheet-store.svelte';
+  import { openCartSheet } from '~/entities/cart';
 
   const totalQuantity = $derived($cartStore.reduce((total, item) => total + item.quantity, 0));
 </script>

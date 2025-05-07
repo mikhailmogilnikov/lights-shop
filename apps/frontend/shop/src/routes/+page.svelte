@@ -3,6 +3,6 @@
   import ContainerLayout from '../shared/layouts/container/container-layout.svelte';
 </script>
 
-<ContainerLayout>
+<ContainerLayout title="Products">
   <ProductsGallery />
 </ContainerLayout>
