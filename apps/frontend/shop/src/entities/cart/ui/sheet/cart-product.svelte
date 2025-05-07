@@ -3,6 +3,8 @@
   import { MOCK_PRODUCTS } from '~/entities/product/config/mock-products';
   import { cartStore } from '../../lib/store/cart-store';
   import NumberFlow from '@number-flow/svelte';
+  import { blur, fade, slide } from 'svelte/transition';
+  import { cubicInOut } from 'svelte/easing';
 
   const { product }: { product: Product } = $props();
 
@@ -23,7 +25,7 @@
   };
 </script>
 
-<div class="flex items-center gap-4">
+<div transition:blur class="flex items-center gap-4">
   <img src={product.imageUrl} alt={product.name} class="size-16 rounded-md object-cover shrink-0" />
   <div class="flex flex-col gap-2 w-full">
     <p class="text-base font-semibold">{product.name}</p>

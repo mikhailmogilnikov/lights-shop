@@ -1,6 +1,10 @@
 @import 'tailwindcss';
 @plugin './entities/theme/utils/theme-plugin';
 
+:root {
+  --font-sans: 'Inter', sans-serif;
+}
+
 @theme {
   --color-black: #000;
   --color-white: #fff;

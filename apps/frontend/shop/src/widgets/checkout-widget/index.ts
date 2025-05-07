@@ -1,0 +1,1 @@
+export { default as CheckoutWidget } from './ui/checkout.svelte';
