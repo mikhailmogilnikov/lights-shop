@@ -1,5 +1,5 @@
 {
-  "name": "order-service",
+  "name": "backend-order-service",
   "main": "src/index.ts",
   "type": "module",
   "scripts": {

@@ -12,12 +12,9 @@
     "docker:up": "docker compose up -d",
     "docker:down": "docker compose down",
     "check-types": "bun run --filter '*' check-types",
-    "dev:native": "bun run --filter native dev",
-    "dev:web": "bun run --filter web dev",
-    "dev:server": "bun run --filter server dev",
-    "db:push": "bun run --filter server db:push",
-    "db:studio": "bun run --filter server db:studio",
-    "prisma:generate": "bun run --filter server prisma:generate",
+    "db:push": "bun run --filter backend-* db:push",
+    "db:studio": "bun run --filter backend-* db:studio",
+    "prisma:generate": "bun run --filter backend-* prisma:generate",
     "lint": "eslint ."
   },
   "devDependencies": {

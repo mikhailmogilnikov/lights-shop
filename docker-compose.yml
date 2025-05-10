@@ -10,6 +10,52 @@ services:
       - "5433:5432"
     volumes:
       - postgres-data:/var/lib/postgresql/data
+    networks:
+      - lights-shop-network
+
+  product-service:
+    build:
+      context: ./apps/backend/product-service
+      dockerfile: Dockerfile
+    container_name: lights-shop-product-service
+    environment:
+      DATABASE_URL: postgresql://postgres:postgres@postgres:5432/lights-shop
+      PORT: 3001
+      NODE_ENV: development
+    ports:
+      - "3001:3001"
+    depends_on:
+      - postgres
+    volumes:
+      - ./apps/backend/product-service:/app
+      - /app/node_modules
+    networks:
+      - lights-shop-network
+
+  order-service:
+    build:
+      context: ./apps/backend/order-service
+      dockerfile: Dockerfile
+    container_name: lights-shop-order-service
+    environment:
+      DATABASE_URL: postgresql://postgres:postgres@postgres:5432/lights-shop
+      PORT: 3002
+      NODE_ENV: development
+      PRODUCT_SERVICE_URL: http://product-service:3001
+    ports:
+      - "3002:3002"
+    depends_on:
+      - postgres
+      - product-service
+    volumes:
+      - ./apps/backend/order-service:/app
+      - /app/node_modules
+    networks:
+      - lights-shop-network
 
 volumes:
   postgres-data:
+
+networks:
+  lights-shop-network:
+    driver: bridge
