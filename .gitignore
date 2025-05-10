@@ -3,3 +3,8 @@ node_modules
 
 /apps/server/
 /apps/web/
+
+# env
+.env*
+.env.production
+.dev.vars
