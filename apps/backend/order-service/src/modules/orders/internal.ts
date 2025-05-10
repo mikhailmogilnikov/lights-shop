@@ -1,6 +1,10 @@
 import { Hono } from 'hono';
 
+import { internalAuth } from '../../middlewares/internalAuth';
+
 const internalOrders = new Hono();
+
+internalOrders.use('*', internalAuth);
 
 internalOrders.get('/', (c) => c.text('orders list'));
 
