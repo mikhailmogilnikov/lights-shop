@@ -3,10 +3,6 @@
   "workspaces": {
     "": {
       "name": "lights-shop",
-      "dependencies": {
-        "@hono/swagger-ui": "^0.5.1",
-        "@hono/zod-validator": "^0.5.0",
-      },
       "devDependencies": {
         "@eslint/js": "^9.25.1",
         "eslint": "^9.25.1",
@@ -58,8 +54,8 @@
       },
     },
     "apps/backend/order-service/prisma/generated/client": {
-      "name": "prisma-client-6af83c5d0a098b4881ecf8f17a33e159dc73e00ffc3150a4966dfbfe5f6956f8",
-      "version": "6.7.0",
+      "name": "prisma-client-a8e7a7706a8ff966f21344982fbc0e357849b7fd32cfbf82fd7cf9c8b13dcdcd",
+      "version": "6.8.2",
     },
     "apps/backend/product-service": {
       "name": "backend-product-service",
@@ -81,8 +77,8 @@
       },
     },
     "apps/backend/product-service/prisma/generated/client": {
-      "name": "prisma-client-a99695e5c24b99ebf81513d2a6d449b147c24e84326776df83219007b0172308",
-      "version": "6.7.0",
+      "name": "prisma-client-bd4465338dca7c6eb51beb8871cf5b1ca33eebbad8a4c4e43a4adeaba9a80aba",
+      "version": "6.8.2",
     },
     "apps/frontend/shop": {
       "name": "frontend-shop",
@@ -229,7 +225,7 @@
 
     "@hono/swagger-ui": ["@hono/swagger-ui@0.5.1", "", { "peerDependencies": { "hono": "*" } }, "sha512-XpUCfszLJ9b1rtFdzqOSHfdg9pfBiC2J5piEjuSanYpDDTIwpMz0ciiv5N3WWUaQpz9fEgH8lttQqL41vIFuDA=="],
 
-    "@hono/zod-validator": ["@hono/zod-validator@0.5.0", "", { "peerDependencies": { "hono": ">=3.9.0", "zod": "^3.19.1" } }, "sha512-ds5bW6DCgAnNHP33E3ieSbaZFd5dkV52ZjyaXtGoR06APFrCtzAsKZxTHwOrJNBdXsi0e5wNwo5L4nVEVnJUdg=="],
+    "@hono/zod-validator": ["@hono/zod-validator@0.2.2", "", { "peerDependencies": { "hono": ">=3.9.0", "zod": "^3.19.1" } }, "sha512-dSDxaPV70Py8wuIU2QNpoVEIOSzSXZ/6/B/h4xA7eOMz7+AarKTSGV8E6QwrdcCbBLkpqfJ4Q2TmBO0eP1tCBQ=="],
 
     "@humanfs/core": ["@humanfs/core@0.19.1", "", {}, "sha512-5DyQ4+1JEUzejeK1JGICcideyfUbGixgS9jNgex5nqkW+cY7WZhxBigmieN5Qnw9ZosSNVC9KQKyb+GUaGyKUA=="],
 
@@ -877,9 +873,9 @@
 
     "prisma": ["prisma@6.7.0", "", { "dependencies": { "@prisma/config": "6.7.0", "@prisma/engines": "6.7.0" }, "optionalDependencies": { "fsevents": "2.3.3" }, "peerDependencies": { "typescript": ">=5.1.0" }, "optionalPeers": ["typescript"], "bin": { "prisma": "build/index.js" } }, "sha512-vArg+4UqnQ13CVhc2WUosemwh6hr6cr6FY2uzDvCIFwH8pu8BXVv38PktoMLVjtX7sbYThxbnZF5YiR8sN2clw=="],
 
-    "prisma-client-6af83c5d0a098b4881ecf8f17a33e159dc73e00ffc3150a4966dfbfe5f6956f8": ["prisma-client-6af83c5d0a098b4881ecf8f17a33e159dc73e00ffc3150a4966dfbfe5f6956f8@workspace:apps/backend/order-service/prisma/generated/client"],
+    "prisma-client-a8e7a7706a8ff966f21344982fbc0e357849b7fd32cfbf82fd7cf9c8b13dcdcd": ["prisma-client-a8e7a7706a8ff966f21344982fbc0e357849b7fd32cfbf82fd7cf9c8b13dcdcd@workspace:apps/backend/order-service/prisma/generated/client"],
 
-    "prisma-client-a99695e5c24b99ebf81513d2a6d449b147c24e84326776df83219007b0172308": ["prisma-client-a99695e5c24b99ebf81513d2a6d449b147c24e84326776df83219007b0172308@workspace:apps/backend/product-service/prisma/generated/client"],
+    "prisma-client-bd4465338dca7c6eb51beb8871cf5b1ca33eebbad8a4c4e43a4adeaba9a80aba": ["prisma-client-bd4465338dca7c6eb51beb8871cf5b1ca33eebbad8a4c4e43a4adeaba9a80aba@workspace:apps/backend/product-service/prisma/generated/client"],
 
     "punycode": ["punycode@2.3.1", "", {}, "sha512-vYt7UD1U9Wg6138shLtLOvdAu+8DsC/ilFtEVHcH+wydcSpNE20AfSOduf6MkRFahL5FY7X1oU7nKVZFtfq8Fg=="],
 
@@ -1060,10 +1056,6 @@
     "@typescript-eslint/typescript-estree/semver": ["semver@7.7.1", "", { "bin": { "semver": "bin/semver.js" } }, "sha512-hlq8tAfn0m/61p4BVRcPzIGr6LKiMwo4VM6dGi6pt4qcRkmNzTcWq6eCEjEh+qXjkMDvPlOFFSGwQjoEa6gyMA=="],
 
     "anymatch/picomatch": ["picomatch@2.3.1", "", {}, "sha512-JU3teHTNjmE2VCGFzuY8EXzCDVwEqB2a8fsIvwaStHhAWJEeVd1o1QD80CU6+ZdEXXSLbSsuLwJjkCBWqRQUVA=="],
-
-    "backend-order-service/@hono/zod-validator": ["@hono/zod-validator@0.2.2", "", { "peerDependencies": { "hono": ">=3.9.0", "zod": "^3.19.1" } }, "sha512-dSDxaPV70Py8wuIU2QNpoVEIOSzSXZ/6/B/h4xA7eOMz7+AarKTSGV8E6QwrdcCbBLkpqfJ4Q2TmBO0eP1tCBQ=="],
-
-    "backend-product-service/@hono/zod-validator": ["@hono/zod-validator@0.2.2", "", { "peerDependencies": { "hono": ">=3.9.0", "zod": "^3.19.1" } }, "sha512-dSDxaPV70Py8wuIU2QNpoVEIOSzSXZ/6/B/h4xA7eOMz7+AarKTSGV8E6QwrdcCbBLkpqfJ4Q2TmBO0eP1tCBQ=="],
 
     "chokidar/glob-parent": ["glob-parent@5.1.2", "", { "dependencies": { "is-glob": "^4.0.1" } }, "sha512-AOIgSQCepiJYwP3ARnGx+5VnTu2HBYdzbGP45eLw1vr3zB3vZLeyed1sC9hnbcOc9/SrMyM5RPQrkGz4aS9Zow=="],
 

@@ -2,7 +2,6 @@ FROM oven/bun:alpine as builder
 
 WORKDIR /app
 
-# Устанавливаем необходимые зависимости
 RUN apk add --no-cache openssl
 
 # Копируем файлы зависимостей
@@ -16,9 +15,6 @@ RUN bun install
 
 # Копируем исходный код
 COPY src ./src/
-
-# # Генерируем только Prisma клиент без выполнения миграций
-# RUN bun run prisma:generate
 
 # Финальный образ
 FROM oven/bun:alpine
@@ -36,7 +32,7 @@ COPY --from=builder /app/tsconfig.json .
 COPY --from=builder /app/prisma.config.ts .
 COPY --from=builder /app/src ./src
 
-# Копируем entrypoint скрипт
+# # Копируем entrypoint скрипт
 COPY entrypoint.sh .
 RUN chmod +x /app/entrypoint.sh
 

@@ -1,20 +1,7 @@
 import type { Product } from '~prisma/generated/client';
+import type { CreateProductSchema, UpdateProductSchema } from '../schemas/product-schemas';
 
 import { prisma } from '~prisma/client';
-
-export interface CreateProductInput {
-  name: string;
-  price: number;
-  imageUrl: string;
-  stockQuantity: number;
-}
-
-export interface UpdateProductInput {
-  name?: string;
-  price?: number;
-  imageUrl?: string;
-  stockQuantity?: number;
-}
 
 export const productService = {
   /**
@@ -36,7 +23,7 @@ export const productService = {
   /**
    * Создать новый продукт
    */
-  async createProduct(data: CreateProductInput): Promise<Product> {
+  async createProduct(data: CreateProductSchema): Promise<Product> {
     return prisma.product.create({
       data,
     });
@@ -45,7 +32,7 @@ export const productService = {
   /**
    * Обновить продукт
    */
-  async updateProduct(id: string, data: UpdateProductInput): Promise<Product | null> {
+  async updateProduct(id: string, data: UpdateProductSchema): Promise<Product | null> {
     return prisma.product.update({
       where: { id },
       data,

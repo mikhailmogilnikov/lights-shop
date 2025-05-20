@@ -1,4 +1,4 @@
-import { z } from "zod";
+import { z } from 'zod';
 
 /**
  * Схема валидации для создания продукта
@@ -10,6 +10,8 @@ export const createProductSchema = z.object({
   stockQuantity: z.number().int().min(0, { message: 'Stock quantity must be non-negative' }),
 });
 
+export type CreateProductSchema = z.infer<typeof createProductSchema>;
+
 /**
  * Схема валидации для обновления продукта
  */
@@ -19,3 +21,5 @@ export const updateProductSchema = z.object({
   imageUrl: z.string().url({ message: 'Image URL must be a valid URL' }).optional(),
   stockQuantity: z.number().int().min(0, { message: 'Stock quantity must be non-negative' }).optional(),
 });
+
+export type UpdateProductSchema = z.infer<typeof updateProductSchema>;

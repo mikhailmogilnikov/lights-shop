@@ -1,8 +1,9 @@
+import type { CreateProductSchema } from '~/modules/products/schemas/product-schemas';
+
 import { prisma } from '~prisma/client';
 
-const MOCK_PRODUCTS = [
+const MOCK_PRODUCTS: CreateProductSchema[] = [
   {
-    id: '1',
     name: 'Incandescent Bulb E27 60W',
     price: 59,
     imageUrl:
@@ -10,7 +11,6 @@ const MOCK_PRODUCTS = [
     stockQuantity: 1000,
   },
   {
-    id: '2',
     name: 'Incandescent Bulb E27 100W',
     price: 69,
     imageUrl:
@@ -18,7 +18,6 @@ const MOCK_PRODUCTS = [
     stockQuantity: 10,
   },
   {
-    id: '3',
     name: 'Incandescent Bulb E14 40W',
     price: 49,
     imageUrl:
@@ -26,7 +25,6 @@ const MOCK_PRODUCTS = [
     stockQuantity: 213,
   },
   {
-    id: '4',
     name: 'Incandescent Globe Bulb G95 40W',
     price: 89,
     imageUrl:
@@ -34,7 +32,6 @@ const MOCK_PRODUCTS = [
     stockQuantity: 421,
   },
   {
-    id: '5',
     name: 'Incandescent Candle Bulb E14 25W',
     price: 55,
     imageUrl:
@@ -42,7 +39,6 @@ const MOCK_PRODUCTS = [
     stockQuantity: 4123,
   },
   {
-    id: '6',
     name: 'Incandescent Tubular Bulb T45 40W',
     price: 79,
     imageUrl:
@@ -50,7 +46,6 @@ const MOCK_PRODUCTS = [
     stockQuantity: 2,
   },
   {
-    id: '7',
     name: 'Incandescent Reflector Bulb R63 60W',
     price: 99,
     imageUrl:
@@ -58,7 +53,6 @@ const MOCK_PRODUCTS = [
     stockQuantity: 1,
   },
   {
-    id: '8',
     name: 'Incandescent Bulb E27 25W',
     price: 45,
     imageUrl:
@@ -66,7 +60,6 @@ const MOCK_PRODUCTS = [
     stockQuantity: 32,
   },
   {
-    id: '9',
     name: 'Incandescent Bulb E14 15W',
     price: 39,
     imageUrl:
@@ -74,7 +67,6 @@ const MOCK_PRODUCTS = [
     stockQuantity: 65,
   },
   {
-    id: '10',
     name: 'Incandescent Globe Bulb G80 60W',
     price: 95,
     imageUrl:
@@ -82,7 +74,6 @@ const MOCK_PRODUCTS = [
     stockQuantity: 10040,
   },
   {
-    id: '11',
     name: 'Incandescent Bulb B22 60W',
     price: 59,
     imageUrl:
@@ -90,7 +81,6 @@ const MOCK_PRODUCTS = [
     stockQuantity: 23,
   },
   {
-    id: '12',
     name: 'Incandescent Bulb E27 200W',
     price: 119,
     imageUrl:
@@ -98,7 +88,6 @@ const MOCK_PRODUCTS = [
     stockQuantity: 124,
   },
   {
-    id: '13',
     name: 'Incandescent Bulb E14 60W',
     price: 65,
     imageUrl:
@@ -106,7 +95,6 @@ const MOCK_PRODUCTS = [
     stockQuantity: 1000,
   },
   {
-    id: '14',
     name: 'Incandescent Bulb E27 15W',
     price: 39,
     imageUrl:
@@ -114,7 +102,6 @@ const MOCK_PRODUCTS = [
     stockQuantity: 11,
   },
   {
-    id: '15',
     name: 'Incandescent Bulb E14 25W',
     price: 49,
     imageUrl:
@@ -122,7 +109,6 @@ const MOCK_PRODUCTS = [
     stockQuantity: 3,
   },
   {
-    id: '16',
     name: 'Incandescent Bulb B22 100W',
     price: 79,
     imageUrl:
@@ -130,7 +116,6 @@ const MOCK_PRODUCTS = [
     stockQuantity: 412,
   },
   {
-    id: '17',
     name: 'Incandescent Bulb E27 75W',
     price: 69,
     imageUrl:
@@ -138,7 +123,6 @@ const MOCK_PRODUCTS = [
     stockQuantity: 23,
   },
   {
-    id: '18',
     name: 'Incandescent Bulb E14 40W',
     price: 55,
     imageUrl:
@@ -146,7 +130,6 @@ const MOCK_PRODUCTS = [
     stockQuantity: 1224,
   },
   {
-    id: '19',
     name: 'Incandescent Bulb E27 150W',
     price: 109,
     imageUrl:
@@ -154,7 +137,6 @@ const MOCK_PRODUCTS = [
     stockQuantity: 2222,
   },
   {
-    id: '20',
     name: 'Incandescent Bulb E14 100W',
     price: 89,
     imageUrl:
