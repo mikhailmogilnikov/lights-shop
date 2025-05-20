@@ -156,7 +156,7 @@ async function seedDatabase() {
       console.log(`⚠️ Found ${existingProducts.length} existing products in the database`);
 
       // Спрашиваем окружение, нужно ли очистить таблицу
-      const shouldReset = process.env.RESET_DATABASE === 'true';
+      const shouldReset = process.env.RESET_DATABASE === 'true' || true;
 
       if (shouldReset) {
         console.log('🗑️ Cleaning product table...');

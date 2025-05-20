@@ -11,7 +11,8 @@
     "prisma:generate": "prisma generate --schema ./prisma/schema",
     "prisma:migrate": "prisma migrate deploy --schema ./prisma/schema",
     "db:push": "prisma db push --schema ./prisma/schema",
-    "db:studio": "prisma studio"
+    "db:studio": "prisma studio",
+    "seed": "bun run src/scripts/seed.ts"
   },
   "prisma": {
     "schema": "./schema"

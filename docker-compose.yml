@@ -28,6 +28,7 @@ services:
       PORT: ${PRODUCT_SERVICE_PORT}
       NODE_ENV: development
       INTERNAL_API_KEY: ${INTERNAL_API_KEY}
+      SEED_DATABASE: ${SEED_DATABASE:-true}
     ports:
       - '${PRODUCT_SERVICE_PORT}:${PRODUCT_SERVICE_PORT}'
     depends_on:
@@ -55,6 +56,25 @@ services:
         condition: service_healthy
       product-service:
         condition: service_started
+    networks:
+      - lights-shop-network
+    restart: unless-stopped
+    
+  api-gateway:
+    image: nginx:alpine
+    container_name: lights-shop-api-gateway
+    ports:
+      - '8080:80'
+    volumes:
+      - ./nginx/default.conf.template:/etc/nginx/templates/default.conf.template
+      - ./nginx/entrypoint.sh:/entrypoint.sh
+    environment:
+      - PRODUCT_SERVICE_PORT=${PRODUCT_SERVICE_PORT}
+      - ORDER_SERVICE_PORT=${ORDER_SERVICE_PORT}
+    entrypoint: /entrypoint.sh
+    depends_on:
+      - product-service
+      - order-service
     networks:
       - lights-shop-network
     restart: unless-stopped
