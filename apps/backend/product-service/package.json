@@ -9,6 +9,7 @@
     "dev": "bun run --hot src/index.ts",
     "start": "bun run dist/src/index.js",
     "prisma:generate": "prisma generate --schema ./prisma/schema",
+    "prisma:migrate": "prisma migrate deploy --schema ./prisma/schema",
     "db:push": "prisma db push --schema ./prisma/schema",
     "db:studio": "prisma studio"
   },
@@ -16,12 +17,14 @@
     "schema": "./schema"
   },
   "dependencies": {
-    "dotenv": "^16.4.7",
-    "zod": "^3.24.2",
-    "@orpc/server": "^1.1.1",
+    "@hono/swagger-ui": "^0.5.1",
+    "@hono/zod-validator": "^0.2.0",
     "@orpc/client": "^1.1.1",
+    "@orpc/server": "^1.1.1",
+    "@prisma/client": "^6.7.0",
+    "dotenv": "^16.4.7",
     "hono": "^4.7.6",
-    "@prisma/client": "^6.7.0"
+    "zod": "^3.24.2"
   },
   "devDependencies": {
     "tsc-alias": "^1.8.11",

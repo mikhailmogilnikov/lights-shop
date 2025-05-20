@@ -10,8 +10,6 @@ app.use(logger());
 
 app.get('/health', (c) => c.json({ status: 'ok' }));
 
-// Применяем middleware для защиты внутренних API
-
 app.route('/_internal/orders', internalOrders);
 app.route('/orders', publicOrders);
 

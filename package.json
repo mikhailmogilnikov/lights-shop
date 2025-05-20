@@ -11,7 +11,7 @@
     "build": "bun run --filter '*' build",
     "docker:up": "docker compose up -d",
     "docker:down": "docker compose down",
-    "check-types": "bun run --filter '*' check-types",
+    "ts": "bun run --filter 'backend-*' check-types",
     "db:push": "bun run --filter backend-* db:push",
     "db:studio": "bun run --filter backend-* db:studio",
     "prisma:generate": "bun run --filter backend-* prisma:generate",
@@ -27,5 +27,9 @@
     "prettier": "^3.5.3",
     "prettier-plugin-tailwindcss": "^0.6.11",
     "typescript-eslint": "^8.31.1"
+  },
+  "dependencies": {
+    "@hono/swagger-ui": "^0.5.1",
+    "@hono/zod-validator": "^0.5.0"
   }
 }
