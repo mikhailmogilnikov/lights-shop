@@ -8,101 +8,238 @@
 // You should NOT make any changes in this file as it will be overwritten.
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
+import { createFileRoute } from '@tanstack/react-router'
+
 // Import Routes
 
 import { Route as rootRoute } from './routes/__root'
-import { Route as IndexImport } from './routes/index'
-import { Route as DemoTanstackQueryImport } from './routes/demo.tanstack-query'
-import { Route as DemoTableImport } from './routes/demo.table'
+import { Route as AuthPublicImport } from './routes/auth/_public'
+import { Route as adminAuthenticatedImport } from './routes/(admin)/_authenticated'
+import { Route as adminAuthenticatedIndexImport } from './routes/(admin)/_authenticated/index'
+import { Route as AuthPublicSignInImport } from './routes/auth/_public.sign-in'
+import { Route as adminAuthenticatedProductsImport } from './routes/(admin)/_authenticated/products'
+import { Route as adminAuthenticatedOrdersImport } from './routes/(admin)/_authenticated/orders'
+
+// Create Virtual Routes
+
+const AuthImport = createFileRoute('/auth')()
+const adminImport = createFileRoute('/(admin)')()
 
 // Create/Update Routes
 
-const IndexRoute = IndexImport.update({
+const AuthRoute = AuthImport.update({
+  id: '/auth',
+  path: '/auth',
+  getParentRoute: () => rootRoute,
+} as any)
+
+const adminRoute = adminImport.update({
+  id: '/(admin)',
+  getParentRoute: () => rootRoute,
+} as any)
+
+const AuthPublicRoute = AuthPublicImport.update({
+  id: '/_public',
+  getParentRoute: () => AuthRoute,
+} as any)
+
+const adminAuthenticatedRoute = adminAuthenticatedImport.update({
+  id: '/_authenticated',
+  getParentRoute: () => adminRoute,
+} as any)
+
+const adminAuthenticatedIndexRoute = adminAuthenticatedIndexImport.update({
   id: '/',
   path: '/',
-  getParentRoute: () => rootRoute,
+  getParentRoute: () => adminAuthenticatedRoute,
 } as any)
 
-const DemoTanstackQueryRoute = DemoTanstackQueryImport.update({
-  id: '/demo/tanstack-query',
-  path: '/demo/tanstack-query',
-  getParentRoute: () => rootRoute,
+const AuthPublicSignInRoute = AuthPublicSignInImport.update({
+  id: '/sign-in',
+  path: '/sign-in',
+  getParentRoute: () => AuthPublicRoute,
 } as any)
 
-const DemoTableRoute = DemoTableImport.update({
-  id: '/demo/table',
-  path: '/demo/table',
-  getParentRoute: () => rootRoute,
+const adminAuthenticatedProductsRoute = adminAuthenticatedProductsImport.update(
+  {
+    id: '/products',
+    path: '/products',
+    getParentRoute: () => adminAuthenticatedRoute,
+  } as any,
+)
+
+const adminAuthenticatedOrdersRoute = adminAuthenticatedOrdersImport.update({
+  id: '/orders',
+  path: '/orders',
+  getParentRoute: () => adminAuthenticatedRoute,
 } as any)
 
 // Populate the FileRoutesByPath interface
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/': {
-      id: '/'
+    '/(admin)': {
+      id: '/(admin)'
       path: '/'
       fullPath: '/'
-      preLoaderRoute: typeof IndexImport
+      preLoaderRoute: typeof adminImport
       parentRoute: typeof rootRoute
     }
-    '/demo/table': {
-      id: '/demo/table'
-      path: '/demo/table'
-      fullPath: '/demo/table'
-      preLoaderRoute: typeof DemoTableImport
+    '/(admin)/_authenticated': {
+      id: '/(admin)/_authenticated'
+      path: '/'
+      fullPath: '/'
+      preLoaderRoute: typeof adminAuthenticatedImport
+      parentRoute: typeof adminRoute
+    }
+    '/auth': {
+      id: '/auth'
+      path: '/auth'
+      fullPath: '/auth'
+      preLoaderRoute: typeof AuthImport
       parentRoute: typeof rootRoute
     }
-    '/demo/tanstack-query': {
-      id: '/demo/tanstack-query'
-      path: '/demo/tanstack-query'
-      fullPath: '/demo/tanstack-query'
-      preLoaderRoute: typeof DemoTanstackQueryImport
-      parentRoute: typeof rootRoute
+    '/auth/_public': {
+      id: '/auth/_public'
+      path: '/auth'
+      fullPath: '/auth'
+      preLoaderRoute: typeof AuthPublicImport
+      parentRoute: typeof AuthRoute
+    }
+    '/(admin)/_authenticated/orders': {
+      id: '/(admin)/_authenticated/orders'
+      path: '/orders'
+      fullPath: '/orders'
+      preLoaderRoute: typeof adminAuthenticatedOrdersImport
+      parentRoute: typeof adminAuthenticatedImport
+    }
+    '/(admin)/_authenticated/products': {
+      id: '/(admin)/_authenticated/products'
+      path: '/products'
+      fullPath: '/products'
+      preLoaderRoute: typeof adminAuthenticatedProductsImport
+      parentRoute: typeof adminAuthenticatedImport
+    }
+    '/auth/_public/sign-in': {
+      id: '/auth/_public/sign-in'
+      path: '/sign-in'
+      fullPath: '/auth/sign-in'
+      preLoaderRoute: typeof AuthPublicSignInImport
+      parentRoute: typeof AuthPublicImport
+    }
+    '/(admin)/_authenticated/': {
+      id: '/(admin)/_authenticated/'
+      path: '/'
+      fullPath: '/'
+      preLoaderRoute: typeof adminAuthenticatedIndexImport
+      parentRoute: typeof adminAuthenticatedImport
     }
   }
 }
 
 // Create and export the route tree
 
+interface adminAuthenticatedRouteChildren {
+  adminAuthenticatedOrdersRoute: typeof adminAuthenticatedOrdersRoute
+  adminAuthenticatedProductsRoute: typeof adminAuthenticatedProductsRoute
+  adminAuthenticatedIndexRoute: typeof adminAuthenticatedIndexRoute
+}
+
+const adminAuthenticatedRouteChildren: adminAuthenticatedRouteChildren = {
+  adminAuthenticatedOrdersRoute: adminAuthenticatedOrdersRoute,
+  adminAuthenticatedProductsRoute: adminAuthenticatedProductsRoute,
+  adminAuthenticatedIndexRoute: adminAuthenticatedIndexRoute,
+}
+
+const adminAuthenticatedRouteWithChildren =
+  adminAuthenticatedRoute._addFileChildren(adminAuthenticatedRouteChildren)
+
+interface adminRouteChildren {
+  adminAuthenticatedRoute: typeof adminAuthenticatedRouteWithChildren
+}
+
+const adminRouteChildren: adminRouteChildren = {
+  adminAuthenticatedRoute: adminAuthenticatedRouteWithChildren,
+}
+
+const adminRouteWithChildren = adminRoute._addFileChildren(adminRouteChildren)
+
+interface AuthPublicRouteChildren {
+  AuthPublicSignInRoute: typeof AuthPublicSignInRoute
+}
+
+const AuthPublicRouteChildren: AuthPublicRouteChildren = {
+  AuthPublicSignInRoute: AuthPublicSignInRoute,
+}
+
+const AuthPublicRouteWithChildren = AuthPublicRoute._addFileChildren(
+  AuthPublicRouteChildren,
+)
+
+interface AuthRouteChildren {
+  AuthPublicRoute: typeof AuthPublicRouteWithChildren
+}
+
+const AuthRouteChildren: AuthRouteChildren = {
+  AuthPublicRoute: AuthPublicRouteWithChildren,
+}
+
+const AuthRouteWithChildren = AuthRoute._addFileChildren(AuthRouteChildren)
+
 export interface FileRoutesByFullPath {
-  '/': typeof IndexRoute
-  '/demo/table': typeof DemoTableRoute
-  '/demo/tanstack-query': typeof DemoTanstackQueryRoute
+  '/': typeof adminAuthenticatedIndexRoute
+  '/auth': typeof AuthPublicRouteWithChildren
+  '/orders': typeof adminAuthenticatedOrdersRoute
+  '/products': typeof adminAuthenticatedProductsRoute
+  '/auth/sign-in': typeof AuthPublicSignInRoute
 }
 
 export interface FileRoutesByTo {
-  '/': typeof IndexRoute
-  '/demo/table': typeof DemoTableRoute
-  '/demo/tanstack-query': typeof DemoTanstackQueryRoute
+  '/auth': typeof AuthPublicRouteWithChildren
+  '/orders': typeof adminAuthenticatedOrdersRoute
+  '/products': typeof adminAuthenticatedProductsRoute
+  '/auth/sign-in': typeof AuthPublicSignInRoute
+  '/': typeof adminAuthenticatedIndexRoute
 }
 
 export interface FileRoutesById {
   __root__: typeof rootRoute
-  '/': typeof IndexRoute
-  '/demo/table': typeof DemoTableRoute
-  '/demo/tanstack-query': typeof DemoTanstackQueryRoute
+  '/(admin)': typeof adminRouteWithChildren
+  '/(admin)/_authenticated': typeof adminAuthenticatedRouteWithChildren
+  '/auth': typeof AuthRouteWithChildren
+  '/auth/_public': typeof AuthPublicRouteWithChildren
+  '/(admin)/_authenticated/orders': typeof adminAuthenticatedOrdersRoute
+  '/(admin)/_authenticated/products': typeof adminAuthenticatedProductsRoute
+  '/auth/_public/sign-in': typeof AuthPublicSignInRoute
+  '/(admin)/_authenticated/': typeof adminAuthenticatedIndexRoute
 }
 
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/demo/table' | '/demo/tanstack-query'
+  fullPaths: '/' | '/auth' | '/orders' | '/products' | '/auth/sign-in'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/demo/table' | '/demo/tanstack-query'
-  id: '__root__' | '/' | '/demo/table' | '/demo/tanstack-query'
+  to: '/auth' | '/orders' | '/products' | '/auth/sign-in' | '/'
+  id:
+    | '__root__'
+    | '/(admin)'
+    | '/(admin)/_authenticated'
+    | '/auth'
+    | '/auth/_public'
+    | '/(admin)/_authenticated/orders'
+    | '/(admin)/_authenticated/products'
+    | '/auth/_public/sign-in'
+    | '/(admin)/_authenticated/'
   fileRoutesById: FileRoutesById
 }
 
 export interface RootRouteChildren {
-  IndexRoute: typeof IndexRoute
-  DemoTableRoute: typeof DemoTableRoute
-  DemoTanstackQueryRoute: typeof DemoTanstackQueryRoute
+  adminRoute: typeof adminRouteWithChildren
+  AuthRoute: typeof AuthRouteWithChildren
 }
 
 const rootRouteChildren: RootRouteChildren = {
-  IndexRoute: IndexRoute,
-  DemoTableRoute: DemoTableRoute,
-  DemoTanstackQueryRoute: DemoTanstackQueryRoute,
+  adminRoute: adminRouteWithChildren,
+  AuthRoute: AuthRouteWithChildren,
 }
 
 export const routeTree = rootRoute
@@ -115,19 +252,53 @@ export const routeTree = rootRoute
     "__root__": {
       "filePath": "__root.tsx",
       "children": [
-        "/",
-        "/demo/table",
-        "/demo/tanstack-query"
+        "/(admin)",
+        "/auth"
       ]
     },
-    "/": {
-      "filePath": "index.tsx"
+    "/(admin)": {
+      "filePath": "(admin)",
+      "children": [
+        "/(admin)/_authenticated"
+      ]
     },
-    "/demo/table": {
-      "filePath": "demo.table.tsx"
+    "/(admin)/_authenticated": {
+      "filePath": "(admin)/_authenticated.tsx",
+      "parent": "/(admin)",
+      "children": [
+        "/(admin)/_authenticated/orders",
+        "/(admin)/_authenticated/products",
+        "/(admin)/_authenticated/"
+      ]
     },
-    "/demo/tanstack-query": {
-      "filePath": "demo.tanstack-query.tsx"
+    "/auth": {
+      "filePath": "auth",
+      "children": [
+        "/auth/_public"
+      ]
+    },
+    "/auth/_public": {
+      "filePath": "auth/_public.tsx",
+      "parent": "/auth",
+      "children": [
+        "/auth/_public/sign-in"
+      ]
+    },
+    "/(admin)/_authenticated/orders": {
+      "filePath": "(admin)/_authenticated/orders.tsx",
+      "parent": "/(admin)/_authenticated"
+    },
+    "/(admin)/_authenticated/products": {
+      "filePath": "(admin)/_authenticated/products.tsx",
+      "parent": "/(admin)/_authenticated"
+    },
+    "/auth/_public/sign-in": {
+      "filePath": "auth/_public.sign-in.tsx",
+      "parent": "/auth/_public"
+    },
+    "/(admin)/_authenticated/": {
+      "filePath": "(admin)/_authenticated/index.tsx",
+      "parent": "/(admin)/_authenticated"
     }
   }
 }

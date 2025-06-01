@@ -9,17 +9,22 @@ import { routeTree } from './routeTree.gen'
 
 import './styles.css'
 import reportWebVitals from './reportWebVitals.ts'
+import { useSession } from './shared/model/session/useSession.ts'
 
 // Create a new router instance
 const router = createRouter({
   routeTree,
   context: {
     ...TanStackQueryProvider.getContext(),
+    session: null,
   },
   defaultPreload: 'intent',
+  defaultPendingMinMs: 0,
+  defaultPendingMs: 0,
   scrollRestoration: true,
   defaultStructuralSharing: true,
   defaultPreloadStaleTime: 0,
+  defaultSsr: false,
 })
 
 // Register the router instance for type safety
@@ -29,6 +34,11 @@ declare module '@tanstack/react-router' {
   }
 }
 
+const App = () => {
+  const { session } = useSession()
+  return <RouterProvider router={router} context={{ session }} />
+}
+
 // Render the app
 const rootElement = document.getElementById('app')
 if (rootElement && !rootElement.innerHTML) {
@@ -36,7 +46,7 @@ if (rootElement && !rootElement.innerHTML) {
   root.render(
     <StrictMode>
       <TanStackQueryProvider.Provider>
-        <RouterProvider router={router} />
+        <App />
       </TanStackQueryProvider.Provider>
     </StrictMode>,
   )

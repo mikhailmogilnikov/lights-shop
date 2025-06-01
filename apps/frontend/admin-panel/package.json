@@ -10,10 +10,14 @@
     "test": "vitest run",
     "lint": "eslint",
     "format": "prettier",
-    "check": "prettier --write . && eslint --fix"
+    "check": "prettier --write . && eslint --fix",
+    "generate-api": "openapi-typescript ./src/shared/api/schema/main.yaml --output ./src/shared/api/schema/generated.ts"
   },
   "dependencies": {
     "@faker-js/faker": "^9.6.0",
+    "@hookform/resolvers": "^5.0.1",
+    "@radix-ui/react-label": "^2.1.7",
+    "@radix-ui/react-slot": "^1.2.3",
     "@tailwindcss/vite": "^4.0.6",
     "@tanstack/match-sorter-utils": "^8.19.4",
     "@tanstack/react-query": "^5.66.5",
@@ -24,12 +28,19 @@
     "@tanstack/router-plugin": "^1.114.3",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
+    "create-gstore": "^0.2.0",
+    "jwt-decode": "^4.0.0",
     "lucide-react": "^0.476.0",
+    "openapi-fetch": "^0.14.0",
+    "openapi-react-query": "^0.5.0",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
+    "react-hook-form": "^7.56.4",
     "tailwind-merge": "^3.0.2",
     "tailwindcss": "^4.0.6",
-    "tailwindcss-animate": "^1.0.7"
+    "tailwindcss-animate": "^1.0.7",
+    "typed-local-store": "^2.0.2",
+    "zod": "^3.25.46"
   },
   "devDependencies": {
     "@tanstack/eslint-config": "^0.1.0",
@@ -43,6 +54,7 @@
     "typescript": "^5.7.2",
     "vite": "^6.1.0",
     "vitest": "^3.0.5",
-    "web-vitals": "^4.2.4"
+    "web-vitals": "^4.2.4",
+    "openapi-typescript": "^7.8.0"
   }
 }
