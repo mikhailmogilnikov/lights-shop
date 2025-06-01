@@ -1,7 +1,5 @@
 # Lights Shop
 
-<b>[Online Shop](https://lights-shop.vercel.app)</b>
-
 ## Features
 
 - **TypeScript** - For type safety and improved developer experience
