@@ -1,0 +1,30 @@
+generator client {
+  provider      = "prisma-client-js"
+  output        = "../generated/client"
+  binaryTargets = ["native", "linux-musl-arm64-openssl-3.0.x"]
+}
+
+datasource db {
+  provider = "postgres"
+  url      = env("DATABASE_URL")
+}
+
+enum AdminRole {
+  ADMIN
+  SUPER_ADMIN
+
+  @@map("admin_role")
+}
+
+model Admin {
+  id        String    @id @default(uuid())
+  email     String    @unique
+  password  String
+  name      String?
+  role      AdminRole @default(ADMIN)
+  isActive  Boolean   @default(true) @map("is_active")
+  createdAt DateTime  @default(now()) @map("created_at")
+  updatedAt DateTime  @updatedAt @map("updated_at")
+
+  @@map("admins")
+} 

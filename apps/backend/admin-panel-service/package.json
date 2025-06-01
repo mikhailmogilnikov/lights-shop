@@ -10,24 +10,26 @@
     "start": "bun run dist/src/index.js",
     "prisma:generate": "prisma generate --schema ./prisma/schema",
     "db:push": "prisma db push --schema ./prisma/schema",
-    "db:studio": "prisma studio"
+    "db:studio": "prisma studio",
+    "seed:admin": "bun run src/scripts/createSuperAdmin.ts"
   },
   "prisma": {
     "schema": "./schema"
   },
   "dependencies": {
-    "dotenv": "^16.4.7",
-    "zod": "^3.24.2",
-    "@orpc/server": "^1.1.1",
+    "@hono/zod-validator": "^0.4.1",
     "@orpc/client": "^1.1.1",
+    "@orpc/server": "^1.1.1",
+    "@prisma/client": "^6.8.2",
+    "better-auth": "^1.2.7",
+    "dotenv": "^16.4.7",
     "hono": "^4.7.6",
-    "@prisma/client": "^6.7.0",
-    "better-auth": "^1.2.7"
+    "zod": "^3.24.2",
+    "prisma": "^6.8.2"
   },
   "devDependencies": {
     "tsc-alias": "^1.8.11",
     "typescript": "^5.8.2",
-    "@types/bun": "^1.2.6",
-    "prisma": "^6.7.0"
+    "@types/bun": "^1.2.6"
   }
 }

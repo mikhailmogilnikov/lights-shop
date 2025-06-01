@@ -24,7 +24,7 @@ services:
       dockerfile: Dockerfile
     container_name: lights-shop-product-service
     environment:
-      DATABASE_URL: ${DATABASE_URL}
+      DATABASE_URL: ${PRODUCT_DATABASE_URL}
       PORT: ${PRODUCT_SERVICE_PORT}
       NODE_ENV: development
       INTERNAL_API_KEY: ${INTERNAL_API_KEY}
@@ -44,7 +44,7 @@ services:
       dockerfile: Dockerfile
     container_name: lights-shop-order-service
     environment:
-      DATABASE_URL: ${DATABASE_URL}
+      DATABASE_URL: ${ORDER_DATABASE_URL}
       PORT: ${ORDER_SERVICE_PORT}
       NODE_ENV: development
       PRODUCT_SERVICE_URL: ${PRODUCT_SERVICE_URL}
@@ -55,6 +55,34 @@ services:
       postgres:
         condition: service_healthy
       product-service:
+        condition: service_started
+    networks:
+      - lights-shop-network
+    restart: unless-stopped
+
+  admin-panel-service:
+    build:
+      context: ./apps/backend/admin-panel-service
+      dockerfile: Dockerfile
+    container_name: lights-shop-admin-panel-service
+    environment:
+      DATABASE_URL: ${ADMIN_DATABASE_URL}
+      PORT: ${ADMIN_PANEL_SERVICE_PORT}
+      NODE_ENV: development
+      PRODUCT_SERVICE_URL: ${PRODUCT_SERVICE_URL}
+      ORDER_SERVICE_URL: ${ORDER_SERVICE_URL}
+      INTERNAL_API_KEY: ${INTERNAL_API_KEY}
+      JWT_SECRET: ${JWT_SECRET}
+      ADMIN_EMAIL: ${ADMIN_EMAIL}
+      ADMIN_PASSWORD: ${ADMIN_PASSWORD}
+    ports:
+      - '${ADMIN_PANEL_SERVICE_PORT}:${ADMIN_PANEL_SERVICE_PORT}'
+    depends_on:
+      postgres:
+        condition: service_healthy
+      product-service:
+        condition: service_started
+      order-service:
         condition: service_started
     networks:
       - lights-shop-network
@@ -71,10 +99,12 @@ services:
     environment:
       - PRODUCT_SERVICE_PORT=${PRODUCT_SERVICE_PORT}
       - ORDER_SERVICE_PORT=${ORDER_SERVICE_PORT}
+      - ADMIN_PANEL_SERVICE_PORT=${ADMIN_PANEL_SERVICE_PORT}
     entrypoint: /entrypoint.sh
     depends_on:
       - product-service
       - order-service
+      - admin-panel-service
     networks:
       - lights-shop-network
     restart: unless-stopped

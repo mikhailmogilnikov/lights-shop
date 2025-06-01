@@ -10,11 +10,11 @@ servers:
 
 components:
   securitySchemes:
-    InternalApiKey:
-      type: apiKey
-      in: header
-      name: X-Internal-API-Key
-      description: API ключ для внутренних сервисов
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: JWT токен для авторизации в админской панели
 
   schemas:
     Product:
@@ -52,6 +52,8 @@ components:
         name:
           type: string
           minLength: 1
+        description:
+          type: string
         price:
           type: number
           minimum: 0
@@ -61,6 +63,8 @@ components:
         stockQuantity:
           type: integer
           minimum: 0
+        category:
+          type: string
 
     UpdateProduct:
       type: object
@@ -68,6 +72,8 @@ components:
         name:
           type: string
           minLength: 1
+        description:
+          type: string
         price:
           type: number
           minimum: 0
@@ -77,13 +83,16 @@ components:
         stockQuantity:
           type: integer
           minimum: 0
+        category:
+          type: string
 
     OrderStatus:
       type: string
       enum:
         - PENDING
         - PROCESSING
-        - COMPLETED
+        - SHIPPED
+        - DELIVERED
         - CANCELLED
 
     OrderItem:
@@ -198,6 +207,141 @@ components:
         status:
           $ref: '#/components/schemas/OrderStatus'
 
+    AdminRole:
+      type: string
+      enum:
+        - ADMIN
+        - SUPER_ADMIN
+
+    Admin:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        email:
+          type: string
+          format: email
+        name:
+          type: string
+        role:
+          $ref: '#/components/schemas/AdminRole'
+        isActive:
+          type: boolean
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+
+    LoginRequest:
+      type: object
+      required:
+        - email
+        - password
+      properties:
+        email:
+          type: string
+          format: email
+        password:
+          type: string
+          minLength: 6
+
+    LoginResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+        token:
+          type: string
+        user:
+          $ref: '#/components/schemas/Admin'
+
+    CreateAdmin:
+      type: object
+      required:
+        - email
+        - password
+        - name
+      properties:
+        email:
+          type: string
+          format: email
+        password:
+          type: string
+          minLength: 6
+        name:
+          type: string
+          minLength: 1
+        role:
+          $ref: '#/components/schemas/AdminRole'
+
+    UpdateAdmin:
+      type: object
+      properties:
+        email:
+          type: string
+          format: email
+        name:
+          type: string
+          minLength: 1
+        role:
+          $ref: '#/components/schemas/AdminRole'
+        isActive:
+          type: boolean
+
+    Dashboard:
+      type: object
+      properties:
+        totalOrders:
+          type: integer
+        pendingOrders:
+          type: integer
+        processingOrders:
+          type: integer
+        completedOrders:
+          type: integer
+        cancelledOrders:
+          type: integer
+        totalRevenue:
+          type: number
+        recentOrders:
+          type: array
+          items:
+            $ref: '#/components/schemas/Order'
+
+    DecreaseStock:
+      type: object
+      required:
+        - quantity
+      properties:
+        quantity:
+          type: integer
+          minimum: 1
+
+    StockResponse:
+      type: object
+      properties:
+        inStock:
+          type: boolean
+
+    DecreaseStockResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+        newStockQuantity:
+          type: integer
+
+    SuccessResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+        message:
+          type: string
+
     Error:
       type: object
       properties:
@@ -207,10 +351,12 @@ components:
           type: string
 
 paths:
-  # Product Service Public Endpoints
+  # Public Product Endpoints
   /products:
     get:
       summary: Получить список всех продуктов
+      tags:
+        - Products (Public)
       responses:
         '200':
           description: Список продуктов успешно получен
@@ -237,6 +383,8 @@ paths:
           format: uuid
     get:
       summary: Получить продукт по ID
+      tags:
+        - Products (Public)
       responses:
         '200':
           description: Продукт успешно найден
@@ -257,228 +405,12 @@ paths:
               schema:
                 $ref: '#/components/schemas/Error'
 
-  # Product Service Internal Endpoints
-  /_internal/products:
-    post:
-      summary: Создать новый продукт
-      security:
-        - InternalApiKey: []
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/CreateProduct'
-      responses:
-        '201':
-          description: Продукт успешно создан
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Product'
-        '400':
-          description: Неверные данные
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-        '401':
-          description: Неавторизованный доступ
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-        '500':
-          description: Внутренняя ошибка сервера
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-
-  /_internal/products/{id}:
-    parameters:
-      - name: id
-        in: path
-        required: true
-        schema:
-          type: string
-          format: uuid
-    put:
-      summary: Обновить продукт
-      security:
-        - InternalApiKey: []
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/UpdateProduct'
-      responses:
-        '200':
-          description: Продукт успешно обновлен
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Product'
-        '404':
-          description: Продукт не найден
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-        '401':
-          description: Неавторизованный доступ
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-        '500':
-          description: Внутренняя ошибка сервера
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-    delete:
-      summary: Удалить продукт
-      security:
-        - InternalApiKey: []
-      responses:
-        '200':
-          description: Продукт успешно удален
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  success:
-                    type: boolean
-                  message:
-                    type: string
-        '404':
-          description: Продукт не найден
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-        '401':
-          description: Неавторизованный доступ
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-        '500':
-          description: Внутренняя ошибка сервера
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-
-  /_internal/products/{id}/stock/{quantity}:
-    parameters:
-      - name: id
-        in: path
-        required: true
-        schema:
-          type: string
-          format: uuid
-      - name: quantity
-        in: path
-        required: true
-        schema:
-          type: integer
-          minimum: 0
-    get:
-      summary: Проверить наличие продукта на складе
-      security:
-        - InternalApiKey: []
-      responses:
-        '200':
-          description: Результат проверки наличия
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  inStock:
-                    type: boolean
-        '400':
-          description: Неверное количество
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-        '401':
-          description: Неавторизованный доступ
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-        '500':
-          description: Внутренняя ошибка сервера
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-
-  /_internal/products/{id}/decrease-stock:
-    parameters:
-      - name: id
-        in: path
-        required: true
-        schema:
-          type: string
-          format: uuid
-    post:
-      summary: Уменьшить количество товара на складе
-      security:
-        - InternalApiKey: []
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              required:
-                - quantity
-              properties:
-                quantity:
-                  type: integer
-                  minimum: 1
-      responses:
-        '200':
-          description: Количество успешно уменьшено
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  success:
-                    type: boolean
-                  newStockQuantity:
-                    type: integer
-        '400':
-          description: Неверное количество или недостаточно товара
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-        '401':
-          description: Неавторизованный доступ
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-        '500':
-          description: Внутренняя ошибка сервера
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-
-  # Order Service Public Endpoints
+  # Public Order Endpoints
   /orders:
     post:
       summary: Создать новый заказ
+      tags:
+        - Orders (Public)
       requestBody:
         required: true
         content:
@@ -508,6 +440,8 @@ paths:
   /orders/by-email:
     get:
       summary: Получить заказы по email клиента
+      tags:
+        - Orders (Public)
       parameters:
         - name: email
           in: query
@@ -541,6 +475,8 @@ paths:
           format: uuid
     get:
       summary: Получить информацию о заказе по ID
+      tags:
+        - Orders (Public)
       responses:
         '200':
           description: Заказ успешно найден
@@ -561,23 +497,27 @@ paths:
               schema:
                 $ref: '#/components/schemas/Error'
 
-  # Order Service Internal Endpoints
-  /_internal/orders:
-    get:
-      summary: Получить список всех заказов
-      security:
-        - InternalApiKey: []
+  # Admin Authentication
+  /admin/auth/login:
+    post:
+      summary: Вход в админскую панель
+      tags:
+        - Admin Authentication
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LoginRequest'
       responses:
         '200':
-          description: Список заказов успешно получен
+          description: Успешная авторизация
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/Order'
+                $ref: '#/components/schemas/LoginResponse'
         '401':
-          description: Неавторизованный доступ
+          description: Неверные учетные данные
           content:
             application/json:
               schema:
@@ -589,7 +529,149 @@ paths:
               schema:
                 $ref: '#/components/schemas/Error'
 
-  /_internal/orders/{id}:
+  /admin/auth/verify:
+    get:
+      summary: Проверить JWT токен
+      tags:
+        - Admin Authentication
+      security:
+        - BearerAuth: []
+      responses:
+        '200':
+          description: Токен действителен
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  valid:
+                    type: boolean
+                  user:
+                    $ref: '#/components/schemas/Admin'
+        '401':
+          description: Недействительный токен
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /admin/auth/create-admin:
+    post:
+      summary: Создать нового администратора (только для SUPER_ADMIN)
+      tags:
+        - Admin Authentication
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateAdmin'
+      responses:
+        '201':
+          description: Администратор успешно создан
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Admin'
+        '400':
+          description: Неверные данные
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '401':
+          description: Нет доступа
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '403':
+          description: Недостаточно прав (требуется SUPER_ADMIN)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  # Admin Dashboard
+  /admin/dashboard:
+    get:
+      summary: Получить данные дашборда
+      tags:
+        - Admin Dashboard
+      security:
+        - BearerAuth: []
+      responses:
+        '200':
+          description: Данные дашборда
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Dashboard'
+        '401':
+          description: Нет доступа
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  # Admin Product Management
+  /admin/products:
+    get:
+      summary: Получить список всех продуктов (админка)
+      tags:
+        - Admin Products
+      security:
+        - BearerAuth: []
+      responses:
+        '200':
+          description: Список продуктов
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Product'
+        '401':
+          description: Нет доступа
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    post:
+      summary: Создать новый продукт
+      tags:
+        - Admin Products
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateProduct'
+      responses:
+        '201':
+          description: Продукт успешно создан
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Product'
+        '400':
+          description: Неверные данные
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '401':
+          description: Нет доступа
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /admin/products/{id}:
     parameters:
       - name: id
         in: path
@@ -598,12 +680,208 @@ paths:
           type: string
           format: uuid
     get:
-      summary: Получить детальную информацию о заказе
+      summary: Получить продукт по ID (админка)
+      tags:
+        - Admin Products
       security:
-        - InternalApiKey: []
+        - BearerAuth: []
       responses:
         '200':
-          description: Заказ успешно найден
+          description: Продукт найден
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Product'
+        '404':
+          description: Продукт не найден
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '401':
+          description: Нет доступа
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    put:
+      summary: Обновить продукт
+      tags:
+        - Admin Products
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateProduct'
+      responses:
+        '200':
+          description: Продукт успешно обновлен
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Product'
+        '404':
+          description: Продукт не найден
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '401':
+          description: Нет доступа
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    delete:
+      summary: Удалить продукт
+      tags:
+        - Admin Products
+      security:
+        - BearerAuth: []
+      responses:
+        '200':
+          description: Продукт успешно удален
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessResponse'
+        '404':
+          description: Продукт не найден
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '401':
+          description: Нет доступа
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /admin/products/{id}/stock/{quantity}:
+    parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: quantity
+        in: path
+        required: true
+        schema:
+          type: integer
+          minimum: 0
+    get:
+      summary: Проверить наличие продукта на складе
+      tags:
+        - Admin Products
+      security:
+        - BearerAuth: []
+      responses:
+        '200':
+          description: Результат проверки наличия
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StockResponse'
+        '400':
+          description: Неверное количество
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '401':
+          description: Нет доступа
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /admin/products/{id}/decrease-stock:
+    parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+    post:
+      summary: Уменьшить количество товара на складе
+      tags:
+        - Admin Products
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DecreaseStock'
+      responses:
+        '200':
+          description: Количество успешно уменьшено
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DecreaseStockResponse'
+        '400':
+          description: Неверное количество или недостаточно товара
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '401':
+          description: Нет доступа
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  # Admin Order Management
+  /admin/orders:
+    get:
+      summary: Получить список всех заказов (админка)
+      tags:
+        - Admin Orders
+      security:
+        - BearerAuth: []
+      responses:
+        '200':
+          description: Список заказов
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Order'
+        '401':
+          description: Нет доступа
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /admin/orders/{id}:
+    parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+    get:
+      summary: Получить детальную информацию о заказе (админка)
+      tags:
+        - Admin Orders
+      security:
+        - BearerAuth: []
+      responses:
+        '200':
+          description: Заказ найден
           content:
             application/json:
               schema:
@@ -615,19 +893,13 @@ paths:
               schema:
                 $ref: '#/components/schemas/Error'
         '401':
-          description: Неавторизованный доступ
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-        '500':
-          description: Внутренняя ошибка сервера
+          description: Нет доступа
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
 
-  /_internal/orders/{id}/status:
+  /admin/orders/{id}/status:
     parameters:
       - name: id
         in: path
@@ -637,8 +909,10 @@ paths:
           format: uuid
     patch:
       summary: Обновить статус заказа
+      tags:
+        - Admin Orders
       security:
-        - InternalApiKey: []
+        - BearerAuth: []
       requestBody:
         required: true
         content:
@@ -659,19 +933,13 @@ paths:
               schema:
                 $ref: '#/components/schemas/Error'
         '401':
-          description: Неавторизованный доступ
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-        '500':
-          description: Внутренняя ошибка сервера
+          description: Нет доступа
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
 
-  /_internal/orders/{id}/cancel:
+  /admin/orders/{id}/cancel:
     parameters:
       - name: id
         in: path
@@ -681,8 +949,10 @@ paths:
           format: uuid
     post:
       summary: Отменить заказ
+      tags:
+        - Admin Orders
       security:
-        - InternalApiKey: []
+        - BearerAuth: []
       responses:
         '200':
           description: Заказ успешно отменен
@@ -703,13 +973,145 @@ paths:
               schema:
                 $ref: '#/components/schemas/Error'
         '401':
-          description: Неавторизованный доступ
+          description: Нет доступа
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
-        '500':
-          description: Внутренняя ошибка сервера
+
+  # Admin Management
+  /admin/admins:
+    get:
+      summary: Получить список всех администраторов
+      tags:
+        - Admin Management
+      security:
+        - BearerAuth: []
+      responses:
+        '200':
+          description: Список администраторов
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Admin'
+        '401':
+          description: Нет доступа
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    post:
+      summary: Создать нового администратора (только для SUPER_ADMIN)
+      tags:
+        - Admin Management
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateAdmin'
+      responses:
+        '201':
+          description: Администратор успешно создан
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Admin'
+        '400':
+          description: Неверные данные
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '401':
+          description: Нет доступа
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '403':
+          description: Недостаточно прав (требуется SUPER_ADMIN)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /admin/admins/{id}:
+    parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+    put:
+      summary: Обновить информацию об администраторе (только для SUPER_ADMIN)
+      tags:
+        - Admin Management
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateAdmin'
+      responses:
+        '200':
+          description: Администратор успешно обновлен
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Admin'
+        '404':
+          description: Администратор не найден
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '401':
+          description: Нет доступа
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '403':
+          description: Недостаточно прав (требуется SUPER_ADMIN)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    delete:
+      summary: Удалить администратора (только для SUPER_ADMIN)
+      tags:
+        - Admin Management
+      security:
+        - BearerAuth: []
+      responses:
+        '200':
+          description: Администратор успешно удален
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessResponse'
+        '404':
+          description: Администратор не найден
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '401':
+          description: Нет доступа
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '403':
+          description: Недостаточно прав (требуется SUPER_ADMIN)
           content:
             application/json:
               schema:

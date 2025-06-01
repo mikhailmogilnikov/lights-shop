@@ -20,8 +20,8 @@ FROM oven/bun:alpine
 
 WORKDIR /app
 
-# Устанавливаем OpenSSL
-RUN apk add --no-cache openssl
+# Устанавливаем OpenSSL для Prisma и postgresql-client для psql
+RUN apk add --no-cache openssl postgresql-client
 
 # Копируем зависимости и исходный код
 COPY --from=builder /app/node_modules ./node_modules
