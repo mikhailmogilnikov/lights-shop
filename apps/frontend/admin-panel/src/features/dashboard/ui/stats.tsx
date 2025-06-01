@@ -13,7 +13,14 @@ export function DashboardStats({ data }: DashboardStatsProps) {
         <Card key={stat.id}>
           <CardHeader>
             <CardTitle>{stat.title}</CardTitle>
-            <p className="text-2xl font-bold mt-2">{data[stat.id]}</p>
+            <p className="text-2xl font-bold mt-2">
+              {stat.id === 'totalRevenue'
+                ? `${data[stat.id].toLocaleString('en-US', {
+                    style: 'currency',
+                    currency: 'USD',
+                  })}`
+                : data[stat.id]}
+            </p>
           </CardHeader>
         </Card>
       ))}

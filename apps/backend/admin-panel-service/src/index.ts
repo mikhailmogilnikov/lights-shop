@@ -1,6 +1,5 @@
 import { Hono } from 'hono';
 import { logger } from 'hono/logger';
-import { cors } from 'hono/cors';
 
 import authRoutes from './modules/auth/auth';
 import adminRoutes from './modules/admin/admin';
@@ -9,7 +8,6 @@ import { authMiddleware } from './middlewares/auth';
 const app = new Hono();
 
 app.use(logger());
-app.use('*', cors());
 
 app.get('/health', (c) => c.json({ status: 'ok' }));
 

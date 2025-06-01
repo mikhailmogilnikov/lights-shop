@@ -1,5 +1,6 @@
 import { useLocation, useNavigate } from '@tanstack/react-router'
 import { HEADER_PATHS } from '../model/header-paths'
+import { HeaderRouteActions } from './HeaderRouteActions'
 import { LinkButton } from '@/shared/ui/link-button'
 import { cn } from '@/shared/lib/utils'
 import { Button } from '@/shared/ui/button'
@@ -29,6 +30,7 @@ export function Header() {
         </div>
       </div>
       <div className="flex items-center gap-2">
+        <HeaderRouteActions />
         <Button
           variant="ghost"
           size="sm"

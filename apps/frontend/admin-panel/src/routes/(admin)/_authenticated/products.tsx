@@ -1,5 +1,6 @@
 import { createFileRoute } from '@tanstack/react-router'
 import { rqClient } from '@/shared/api'
+import { ProductsTable } from '@/features/products/ui/products-table'
 
 export const Route = createFileRoute('/(admin)/_authenticated/products')({
   component: RouteComponent,
@@ -12,5 +13,5 @@ export const Route = createFileRoute('/(admin)/_authenticated/products')({
 function RouteComponent() {
   const { data } = rqClient.useSuspenseQuery('get', '/admin/products')
 
-  return <div>{JSON.stringify(data)}</div>
+  return <ProductsTable data={data} />
 }

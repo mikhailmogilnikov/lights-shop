@@ -6,6 +6,9 @@
     "packages/**"
   ],
   "packageManager": "bun@1.2.2",
+  "resolutions": {
+    "zod": "^3.25.46"
+  },
   "scripts": {
     "dev": "bun run --filter 'frontend-*' dev",
     "build": "bun run --filter '*' build",

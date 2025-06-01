@@ -36,7 +36,7 @@ export const useLogin = () => {
         login(resp.token)
         setTimeout(() => {
           navigate({ to: '/' })
-        }, 100)
+        }, 300)
       }
     },
   })
