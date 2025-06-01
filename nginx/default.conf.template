@@ -44,8 +44,27 @@ server {
     }
 
     # Для внутренних запросов добавляем доступ к интерфейсам микросервисов
+    location ~* ^/_internal/products(/.*)?$ {
+        # Перенаправляем на product-service, сохраняя /_internal в пути
+        proxy_pass http://product-service:${PRODUCT_SERVICE_PORT};
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+    }
+
+    location ~* ^/_internal/orders(/.*)?$ {
+        # Перенаправляем на order-service, сохраняя /_internal в пути
+        proxy_pass http://order-service:${ORDER_SERVICE_PORT};
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+    }
+    
+    # Для других внутренних путей возвращаем 403
     location /_internal/ {
-        return 403;  # Запрещаем доступ извне к внутренним API
+        return 403;  # Запрещаем доступ извне к другим внутренним API
     }
 
     # Для всех остальных запросов возвращаем 404

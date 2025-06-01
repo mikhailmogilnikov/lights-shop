@@ -1,14 +1,12 @@
 import { Hono } from 'hono';
 import { zValidator } from '@hono/zod-validator';
 
-import { internalAuth } from '../../middlewares/internalAuth';
-
 import { orderService } from './services/orderService';
 import { updateOrderStatusSchema } from './schemas/order-schemas';
 
 const internalOrders = new Hono();
 
-internalOrders.use('*', internalAuth);
+// internalOrders.use('*', internalAuth);
 
 /**
  * Получение списка всех заказов

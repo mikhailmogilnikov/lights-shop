@@ -1,11 +1,11 @@
 <script lang="ts">
   import NumberFlow from '@number-flow/svelte';
-  import { crossfade, fade } from 'svelte/transition';
+  import { fade } from 'svelte/transition';
 
   import { cartStore } from '~/entities/cart';
   import type { Product } from '~/entities/product';
   import { formatPrice } from '~/shared/lib/utils/price';
-  const { id, name, price, imageUrl, quantity: stockQuantity }: Product = $props();
+  const { id, name, price, imageUrl, stockQuantity }: Product = $props();
 
   const quantity = $derived($cartStore.find((item) => item.id === id)?.quantity || 0);
 
@@ -38,7 +38,7 @@
       {#if quantity === 0}
         <button
           in:fade
-          class="font-bold px-4 py-2 bg-foreground/10 text-white rounded-lg h-10 hover:bg-foreground/20 active:bg-foreground/30 transition-colors"
+          class="font-bold px-4 py-2 bg-foreground/10 text-white rounded-lg h-10 hover:bg-foreground/20 active:bg-foreground/30 transition-colors cursor-pointer touch-none"
           onclick={addToCart}>Add to cart</button
         >
       {:else}
@@ -47,7 +47,7 @@
           class="flex items-center justify-between gap-2 text-xl bg-foreground/10 rounded-lg h-10 overflow-clip"
         >
           <button
-            class="font-bold h-full px-4 pr-10 pb-0.5 bg-gradient-to-r hover:from-foreground/20 active:from-foreground/30 to-transparent transition-colors cursor-pointer"
+            class="font-bold h-full px-4 pr-10 pb-0.5 bg-gradient-to-r hover:from-foreground/20 active:from-foreground/30 to-transparent transition-colors cursor-pointer touch-none"
             onclick={dec}>-</button
           >
           <p class="text-base font-semibold">

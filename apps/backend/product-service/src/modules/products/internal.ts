@@ -1,14 +1,13 @@
 import { Hono } from 'hono';
 import { zValidator } from '@hono/zod-validator';
 
-import { internalAuth } from '~/middlewares/internalAuth';
 
 import { productService } from './services/productService';
 import { createProductSchema, updateProductSchema } from './schemas/product-schemas';
 
 const internalProducts = new Hono();
 
-internalProducts.use('*', internalAuth);
+// internalProducts.use('*', internalAuth);
 
 /**
  * Создать новый продукт

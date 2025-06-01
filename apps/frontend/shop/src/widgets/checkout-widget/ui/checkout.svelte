@@ -1,18 +1,16 @@
 <script lang="ts">
-  import { cartStore } from '~/entities/cart';
-  import OrderSummary from './order-summary.svelte';
-  import CheckoutForm from './checkout-form.svelte';
-  import { MOCK_PRODUCTS } from '~/entities/product/config/mock-products';
+  import { getProducts } from '~/entities/product';
+  import CheckoutContent from './checkout-content.svelte';
 
-  const totalPrice = $derived(
-    $cartStore.reduce((acc, item) => {
-      const product = MOCK_PRODUCTS.find((product) => product.id === item.id);
-      return acc + (product?.price || 0) * item.quantity;
-    }, 0),
-  );
+  const productsPromise = getProducts();
 </script>
 
 <div class="flex flex-col gap-4 max-w-xl mx-auto">
-  <OrderSummary {totalPrice} />
-  <CheckoutForm />
+  {#await productsPromise}
+    <div class="flex items-center justify-center h-full">
+      <div class="animate-spin rounded-full size-6 border-t-2 border-b-2 border-foreground"></div>
+    </div>
+  {:then products}
+    <CheckoutContent {products} />
+  {/await}
 </div>

@@ -3,20 +3,10 @@
   import { z } from 'zod';
   import { cartStore } from '~/entities/cart';
   import FormField from '~/shared/ui/form-field.svelte';
+  import { checkoutFormSchema, type CheckoutFormData } from '../model/checkout-schema';
+  import { createOrder } from '../api/checkout';
 
-  const formSchema = z.object({
-    firstName: z.string().min(2, 'First name must be at least 2 characters'),
-    lastName: z.string().min(2, 'Last name must be at least 2 characters'),
-    email: z.string().email('Please enter a valid email address'),
-    address: z.string().min(5, 'Address must be at least 5 characters'),
-    city: z.string().min(2, 'City must be at least 2 characters'),
-    postalCode: z.string().regex(/^\d{6}$/, 'Postal code must be 6 digits'),
-    country: z.string().min(2, 'Country must be at least 2 characters'),
-  });
-
-  type FormData = z.infer<typeof formSchema>;
-
-  let formData: FormData = {
+  let formData: CheckoutFormData = {
     firstName: '',
     lastName: '',
     email: '',
@@ -26,11 +16,13 @@
     country: '',
   };
 
-  let errors: Partial<Record<keyof FormData, string>> = {};
+  let cartItems = $cartStore;
 
-  function validateField(field: keyof FormData) {
+  let errors: Partial<Record<keyof CheckoutFormData, string>> = {};
+
+  function validateField(field: keyof CheckoutFormData) {
     try {
-      formSchema.shape[field].parse(formData[field]);
+      checkoutFormSchema.shape[field].parse(formData[field]);
       errors[field] = undefined;
     } catch (error) {
       if (error instanceof z.ZodError) {
@@ -39,11 +31,11 @@
     }
   }
 
-  function handleSubmit() {
+  async function handleSubmit() {
     try {
-      const validatedData = formSchema.parse(formData);
+      const validatedData = checkoutFormSchema.parse(formData);
       console.log('Form submitted:', validatedData);
-
+      await createOrder(validatedData, cartItems);
       cartStore.clear();
       goto('/checkout/success');
     } catch (error) {
@@ -51,11 +43,11 @@
       if (error instanceof z.ZodError) {
         errors = error.errors.reduce(
           (acc, curr) => {
-            const field = curr.path[0] as keyof FormData;
+            const field = curr.path[0] as keyof CheckoutFormData;
             acc[field] = curr.message;
             return acc;
           },
-          {} as Record<keyof FormData, string>,
+          {} as Record<keyof CheckoutFormData, string>,
         );
       }
     }
