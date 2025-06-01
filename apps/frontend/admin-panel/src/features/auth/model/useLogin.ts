@@ -2,8 +2,8 @@ import { useForm } from 'react-hook-form'
 import { z } from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useNavigate } from '@tanstack/react-router'
-import { rqClient } from '@/shared/api'
 import { useSession } from '@/shared/model/session'
+import { publicRqClient } from '@/shared/api/instance'
 
 const formSchema = z.object({
   email: z.string().email(),
@@ -24,20 +24,16 @@ export const useLogin = () => {
     },
   })
 
-  const { mutate } = rqClient.useMutation('post', '/admin/auth/login', {
+  const { mutate } = publicRqClient.useMutation('post', '/admin/auth/login', {
     onError: () => {
       form.setError('password', {
         message: 'Invalid email or password',
       })
     },
     onSuccess: (resp) => {
-      if (resp.token) {
-        form.reset()
-        login(resp.token)
-        setTimeout(() => {
-          navigate({ to: '/' })
-        }, 300)
-      }
+      form.reset()
+      login(resp.token)
+      navigate({ to: '/' })
     },
   })
 

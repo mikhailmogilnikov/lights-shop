@@ -28,5 +28,6 @@ export const useSession = createGStore(() => {
     login,
     logout,
     session,
+    token,
   }
 })

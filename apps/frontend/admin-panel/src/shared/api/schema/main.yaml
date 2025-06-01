@@ -99,8 +99,7 @@ components:
       enum:
         - PENDING
         - PROCESSING
-        - SHIPPED
-        - DELIVERED
+        - COMPLETED
         - CANCELLED
 
     OrderItem:

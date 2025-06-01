@@ -19,6 +19,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/shared/ui/select'
+import { cn } from '@/shared/lib/utils'
 
 export function OrdersTable({ data }: { data: Array<ApiComponents['Order']> }) {
   const sortedOrders = useMemo(() => {
@@ -42,7 +43,14 @@ export function OrdersTable({ data }: { data: Array<ApiComponents['Order']> }) {
       </TableHeader>
       <TableBody>
         {sortedOrders.map((order) => (
-          <TableRow key={order.id}>
+          <TableRow
+            key={order.id}
+            className={cn({
+              'bg-destructive/10': order.status === 'CANCELLED',
+              'bg-yellow-500/10': order.status === 'PENDING',
+              'bg-green-500/10': order.status === 'COMPLETED',
+            })}
+          >
             <TableCell className="pl-4">
               {order.customerName} {order.customerLastName}
             </TableCell>
@@ -103,8 +111,8 @@ const OrderStatus = ({ order }: { order: ApiComponents['Order'] }) => {
       </SelectTrigger>
       <SelectContent>
         <SelectItem value="PENDING">Pending</SelectItem>
-        <SelectItem value="SHIPPED">Shipped</SelectItem>
-        <SelectItem value="DELIVERED">Delivered</SelectItem>
+        <SelectItem value="PROCESSING">Processing</SelectItem>
+        <SelectItem value="COMPLETED">Completed</SelectItem>
         <SelectItem value="CANCELLED">Cancelled</SelectItem>
       </SelectContent>
     </Select>

@@ -1097,7 +1097,7 @@ export interface components {
             category?: string;
         };
         /** @enum {string} */
-        OrderStatus: "PENDING" | "PROCESSING" | "SHIPPED" | "DELIVERED" | "CANCELLED";
+        OrderStatus: "PENDING" | "PROCESSING" | "COMPLETED" | "CANCELLED";
         OrderItem: {
             /** Format: uuid */
             id: string;
